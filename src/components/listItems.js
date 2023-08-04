@@ -9,23 +9,28 @@ import PeopleIcon from "@mui/icons-material/People";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import AddIcon from "@mui/icons-material/Add";
+import { NavLink } from "react-router-dom/cjs/react-router-dom";
 
 export const mainListItems = (
   <React.Fragment>
-    <ListItemButton>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AddIcon />
-      </ListItemIcon>
-      <ListItemText primary="Add New Pills" />
-    </ListItemButton>
-    
+    <NavLink to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>
+      <ListItemButton>
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" />
+      </ListItemButton>
+    </NavLink>
+    <NavLink
+      to="/add-medicine"
+      style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
+    >
+      <ListItemButton>
+        <ListItemIcon>
+          <AddIcon />
+        </ListItemIcon>
+        <ListItemText primary="Add New Dosage" />
+      </ListItemButton>
+    </NavLink>
   </React.Fragment>
 );
-
-
