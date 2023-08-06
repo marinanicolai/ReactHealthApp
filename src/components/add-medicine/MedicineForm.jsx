@@ -25,6 +25,11 @@ import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
 import Grid from "@mui/material/Grid";
+import { useContext } from "react";
+import { AppContext } from "../AppContext";
+import { ToastContainer, toast } from "react-toastify";
+import { useEffect } from "react";
+import axios from "axios";
 
 
 function Copyright() {
@@ -40,7 +45,7 @@ function Copyright() {
   );
 }
 
-const steps = ["PATIENT'S INFOMATION", "Review Your Medicine"];
+const steps = ["PATIENT'S INFOMATION", "REVIEW DETAILS"];
 
 function getStepContent(step) {
   switch (step) {
@@ -56,14 +61,71 @@ const defaultTheme = createTheme();
 const drawerWidth = 240;
 
 export default function MedicineForm() {
+  const [loggedInUserId,setUserLoggedIn] = React.useState();
+
+  useEffect(()=>{
+    const loggedInUserId = sessionStorage.getItem("loggedInUserId");
+    setUserLoggedIn(loggedInUserId);
+
+  },[])
+  const {
+    name,
+    age,
+    dob,
+    medicineName,
+    startDate,
+    document_user_id,
+    dailyDosageCount,
+    dailyOccurrence,
+  } = useContext(AppContext);
+  console.log("Daily Occurrence",dailyOccurrence);
   const history = useHistory();
   const [activeStep, setActiveStep] = React.useState(0);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  const handleNext = () => {
-    setActiveStep(activeStep + 1);
+
+  const handleNext = async () => {
+    console.log("Active Step",activeStep)
+    console.log({name,age,dob,medicineName,startDate,dailyDosageCount,dailyDosageCount});
+    if(!name || !age || !dob || !medicineName || !startDate || !dailyDosageCount || !dailyDosageCount){
+      toast.error("Please Enter All the required fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    else{
+if (dailyOccurrence.length != dailyDosageCount ) {
+  toast.error("Please Add Time according the Daily Count", {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+} else {
+  if (activeStep == 1) {
+    await axios
+      .get("http://localhost:8080/getAllPatients",{headers:{
+        "Access-Control-Allow-Origin":"true"
+      }})
+      .then((res) => console.log(res));
+  };
+  setActiveStep(activeStep + 1);
+}
+    }
+    
+   
   };
 
   const handleBack = () => {
@@ -122,6 +184,7 @@ const AppBar = styled(MuiAppBar, {
 
   return (
     <div>
+      <ToastContainer />
       <ThemeProvider theme={defaultTheme}>
         <React.Fragment>
           <Box sx={{ display: "flex" }}>
@@ -208,12 +271,7 @@ const AppBar = styled(MuiAppBar, {
                   {activeStep === steps.length ? (
                     <React.Fragment>
                       <Typography variant="h5" gutterBottom>
-                        Thank you for your order.
-                      </Typography>
-                      <Typography variant="subtitle1">
-                        Your order number is #2001539. We have emailed your
-                        order confirmation, and will send you an update when
-                        your order has shipped.
+                        Thanks for submitting your details
                       </Typography>
                     </React.Fragment>
                   ) : (
@@ -232,7 +290,7 @@ const AppBar = styled(MuiAppBar, {
                           sx={{ mt: 3, ml: 1 }}
                         >
                           {activeStep === steps.length - 1
-                            ? "Place order"
+                            ? "Submit"
                             : "Next"}
                         </Button>
                       </Box>

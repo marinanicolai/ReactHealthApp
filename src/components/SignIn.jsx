@@ -17,7 +17,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth } from "./firebase";
-import { NavLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 function Copyright(props) {
   return (
@@ -63,6 +63,7 @@ export default function SignInSide() {
          if (res) {
            
            sessionStorage.setItem("token", res.user.accessToken);
+           sessionStorage.setItem("loggedInUserId",res.user.uid);
            setTimeout(() => {
              history.push("/dashboard");
            }, 2000);
