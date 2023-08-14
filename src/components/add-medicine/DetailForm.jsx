@@ -14,6 +14,7 @@ import { AppContext } from "../AppContext";
 import { useEffect } from "react";
 
 export default function DetailForm() {
+
   const {
     name,
     setName,
@@ -31,7 +32,12 @@ export default function DetailForm() {
     setDailyDosageCount,
     dailyOccurrence,
     setDailyOccurrence,
+    user_id,
+    setUserId
   } = useContext(AppContext);
+  const loggedInUserId= sessionStorage.getItem("loggedInUserId");
+  console.log(loggedInUserId);
+  setUserId(loggedInUserId);
   console.log(startDate)
   console.log(dob)
   const today = new Date();

@@ -30,7 +30,7 @@ import { AppContext } from "../AppContext";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
 import axios from "axios";
-
+import { API_ENDPOINTS } from "../ApiEndpoints";
 
 function Copyright() {
   return (
@@ -74,10 +74,24 @@ export default function MedicineForm() {
     dob,
     medicineName,
     startDate,
-    document_user_id,
     dailyDosageCount,
     dailyOccurrence,
+    user_id,
+    fcmToken
   } = useContext(AppContext);
+  console.log(user_id);
+  const requestObj = {
+    name,
+    age,
+    dob,
+    startDate,
+    medicineName,
+    dailyOccurrence,
+    dailyDosageCount,
+    user_id,
+    fcmToken
+  };
+  console.log(requestObj)
   console.log("Daily Occurrence",dailyOccurrence);
   const history = useHistory();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -87,9 +101,26 @@ export default function MedicineForm() {
   };
 
   const handleNext = async () => {
-    console.log("Active Step",activeStep)
-    console.log({name,age,dob,medicineName,startDate,dailyDosageCount,dailyDosageCount});
-    if(!name || !age || !dob || !medicineName || !startDate || !dailyDosageCount || !dailyDosageCount){
+    console.log("Active Step", activeStep);
+    console.log({
+      name,
+      age,
+      dob,
+      medicineName,
+      startDate,
+      dailyDosageCount,
+      dailyDosageCount,
+      fcmToken
+    });
+    if (
+      !name ||
+      !age ||
+      !dob ||
+      !medicineName ||
+      !startDate ||
+      !dailyDosageCount ||
+      !dailyDosageCount
+    ) {
       toast.error("Please Enter All the required fields", {
         position: "top-right",
         autoClose: 5000,
@@ -100,32 +131,61 @@ export default function MedicineForm() {
         progress: undefined,
         theme: "light",
       });
+    } else {
+      if (dailyOccurrence.length != dailyDosageCount) {
+        toast.error("Please Add Time according the Daily Count", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        if (activeStep == 1) {
+          const endpoint = API_ENDPOINTS.createPatient;
+          const apiUrl = `${process.env.REACT_APP_API_BASE_URL}${endpoint}`;
+          console.log(apiUrl);
+          await axios
+            .post(apiUrl,requestObj, {
+              headers: {
+                "Access-Control-Allow-Origin": "true",
+              },
+            })
+            .then((res) => {
+              console.log(res);
+              if (res) {
+                toast.success(res.data, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              }
+              setActiveStep(activeStep + 1);
+            })
+            .catch((err) => {
+              toast.error(err.message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            });
+        }
+        if (activeStep == 0) setActiveStep(activeStep + 1);
+      }
     }
-    else{
-if (dailyOccurrence.length != dailyDosageCount ) {
-  toast.error("Please Add Time according the Daily Count", {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  });
-} else {
-  if (activeStep == 1) {
-    await axios
-      .get("http://localhost:8080/getAllPatients",{headers:{
-        "Access-Control-Allow-Origin":"true"
-      }})
-      .then((res) => console.log(res));
-  };
-  setActiveStep(activeStep + 1);
-}
-    }
-    
-   
   };
 
   const handleBack = () => {
