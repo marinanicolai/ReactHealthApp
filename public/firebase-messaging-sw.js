@@ -20,8 +20,8 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   // Customize how you handle the background message here
   // For example, you can use the `self.registration.showNotification` method
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
+  self.registration.showNotification(payload.data.Title, {
+    body: payload.data.Message,
   });
 });
 // Handle foreground messages
@@ -29,7 +29,7 @@ self.addEventListener('push', event => {
   const payload = event.data.json();
 
   // Customize how you handle the foreground message here
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
+  self.registration.showNotification(payload.data.Title, {
+    body: payload.data.Message,
   });
 });

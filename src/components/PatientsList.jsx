@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { ToastContainer, toast } from 'react-toastify'
 import "../App.css"
 const columns: GridColDef[] = [
-  { field: 'document_user_id', headerName: 'User Id', width: 150 },
+  { field: 'document_user_id', headerName: 'Document Id', width: 150 },
   {
     field: 'name',
     headerName: 'Full name',
@@ -110,11 +110,15 @@ export default function PatientsList () {
   }
 
   useEffect(() => {
+    const loggedInUserId = sessionStorage.getItem("loggedInUserId");
     const getAllPatients = API_ENDPOINTS.getAllPatients
     const getAllPatientsUrl = `${process.env.REACT_APP_API_BASE_URL}${getAllPatients}`
     axios
       .get(getAllPatientsUrl)
-      .then(res => setRows(res.data))
+      .then(res => {
+        const matchedRecord = res.data.filter(user=> user.user_id == loggedInUserId);
+        console.log(matchedRecord)
+        setRows(matchedRecord)})
       .catch(err => console.log(err.message))
   }, [])
   return (
