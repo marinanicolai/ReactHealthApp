@@ -11,6 +11,13 @@ import { useState } from "react";
 import { AppContextProvider } from "./components/AppContext";
 import axios from "axios";
 
+const instance = axios.create({
+  baseURL: 'http://ec2-13-53-102-156.eu-north-1.compute.amazonaws.com:8080',
+  headers: {
+    'Access-Control-Allow-Origin': 'true', // You can set default headers here
+    // Other default headers if needed
+  },
+});
 function App() {
  
   return (
@@ -29,5 +36,6 @@ function App() {
     </div>
   );
 }
-
+export {instance};
 export default App;
+

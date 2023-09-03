@@ -22,6 +22,7 @@ import { getToken } from "firebase/messaging";
 import { getMessaging } from 'firebase/messaging/sw'
 import { API_ENDPOINTS } from "./ApiEndpoints";
 import axios from "axios";
+import { instance } from "../App";
 import { AppContext } from "./AppContext";
 // import { app,messaging } from './firebase' // Import your Firebase app instance
 
@@ -80,8 +81,8 @@ export default function SignInSide() {
             const userId = res.user.uid;
             const fcmToken= sessionStorage.getItem("fcmToken");
             const updateFCMToken = API_ENDPOINTS.updateFCMToken;
-            const updateFCMTokenUrl = `${process.env.REACT_APP_API_BASE_URL}${updateFCMToken}?userId=${res.user.uid}`
-            axios.put(updateFCMTokenUrl,{userId,fcmToken}).then((res)=> console.log(res.data)
+            const updateFCMTokenUrl = `${updateFCMToken}?userId=${res.user.uid}`
+            instance.put(updateFCMTokenUrl,{userId,fcmToken}).then((res)=> console.log(res.data)
             ).catch((err)=> console.log(err.message));
             // axios.put(apiUrl+`?userId=${res.user.uid}`,{fcmToken}).then((res)=> console.log(res.data)).catch((err)=> console.log(err.message));
             setTimeout(() => {
