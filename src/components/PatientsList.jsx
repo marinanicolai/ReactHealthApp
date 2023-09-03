@@ -6,7 +6,8 @@ import axios from 'axios'
 import { API_ENDPOINTS } from './ApiEndpoints'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { ToastContainer, toast } from 'react-toastify'
-import "../App.css"
+import { instance } from '../App'
+import "../App.css";
 const columns: GridColDef[] = [
   { field: 'document_user_id', headerName: 'Document Id', width: 150 },
   {
@@ -75,8 +76,8 @@ export default function PatientsList () {
     // Perform deletion logic here
     const rowId = params.row.document_user_id
     const deletePatient = API_ENDPOINTS.deletePatient
-    const deletePatientUrl = `${process.env.REACT_APP_API_BASE_URL}${deletePatient}?documentId=${rowId}`
-    axios
+    const deletePatientUrl = `${deletePatient}?documentId=${rowId}`
+    instance
       .delete(deletePatientUrl)
       .then(res => {
         if (res) {
@@ -113,8 +114,8 @@ export default function PatientsList () {
     const loggedInUserId = sessionStorage.getItem("loggedInUserId");
     const getAllPatients = API_ENDPOINTS.getAllPatients
     const getAllPatientsUrl = `${process.env.REACT_APP_API_BASE_URL}${getAllPatients}`
-    axios
-      .get(getAllPatientsUrl)
+    instance
+      .get(getAllPatients)
       .then(res => {
         const matchedRecord = res.data.filter(user=> user.user_id == loggedInUserId);
         console.log(matchedRecord)

@@ -31,6 +31,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
 import axios from "axios";
 import { API_ENDPOINTS } from "../ApiEndpoints";
+import { instance } from "../../App";
 
 function Copyright() {
   return (
@@ -145,11 +146,9 @@ export default function MedicineForm() {
         });
       } else {
         if (activeStep == 1) {
-          const endpoint = API_ENDPOINTS.createPatient;
-          const apiUrl = `${process.env.REACT_APP_API_BASE_URL}${endpoint}`;
-          console.log(apiUrl);
-          await axios
-            .post(apiUrl,requestObj, {
+          var endpoint = API_ENDPOINTS.createPatient;
+          await instance
+            .post(endpoint,requestObj, {
               headers: {
                 "Access-Control-Allow-Origin": "true",
               },
